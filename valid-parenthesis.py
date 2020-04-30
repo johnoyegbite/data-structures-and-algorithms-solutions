@@ -25,6 +25,7 @@ Challenge:
     Use O(n) time, n is the number of parentheses.
 """
 
+
 def isValid(s):
     """
     :type s: str
@@ -32,19 +33,14 @@ def isValid(s):
     """
     stack = []
     closed_b = {"(": ")", "{": "}", "[": "]"}
-    
+
     for b in s:
         if b == "(" or b == "[" or b == "{":
             stack.append(b)
         else:
-            if stack:
-                top = stack[-1]
-                if closed_b[top] == b:
-                    stack.pop()
-                else:
-                    return False
-            else:
+            if not len(stack) or closed_b[stack.pop()] != b:
                 return False
+
     if len(stack):
         return False
     return True
@@ -52,4 +48,5 @@ def isValid(s):
 
 if __name__ == "__main__":
     s = "(])"
+    s = "()[]{}"
     print(isValid(s))

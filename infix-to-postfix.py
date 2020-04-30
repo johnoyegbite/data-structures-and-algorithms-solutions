@@ -24,8 +24,18 @@ def is_closing_parentheses(operator):
 def stack_not_empty(stack):
     return len(stack) > 0
 
+
+def infix_to_postfix(infix: str) -> str:
+    """
+    Note:
+    -> 4+*6 would give syntax error
+    -> 4*+6 would give 24 => 4 * (+9)
     
-def infix_to_postfix(infix:str)->str:
+    Write a function to replace all multiple in infix of the from
+       1. replace *+ with *
+       
+    """
+    # infix = replace_multiples(infix)
     postfix_str = ""
     operator_stack = []
     operators = ["+", "-", "*", "/", "^"]
@@ -72,5 +82,5 @@ def infix_to_postfix(infix:str)->str:
 if __name__ == "__main__":
     infix = "(1+2)*(3-4)*(5+9)"
     infix = "6*3/2*5"
-    infix = "1+(2*3-4)^5+9"
+    infix = "6*3/2*5*1+(2*3+4)^5+9"
     print(infix_to_postfix(infix))
