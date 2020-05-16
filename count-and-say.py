@@ -48,6 +48,7 @@ def compress(string):
     "1211 would give 111221"
     "111221 would give 312211"
     "312211 would give 13112221"
+
     if not len(string):
         return ""
     new_string_list = []
@@ -76,7 +77,7 @@ def compress(string):
             count = 1  # This is the first time we have seen it.
         i += 1
 
-    # The else above block won't allow me to store the count for the last
+    # The else block above won't allow me to store the count for the last
     # character since we are not going to meet a new character that would allow
     # me to store it. Hence I store it after the loop.
     if count > 0:
@@ -84,7 +85,7 @@ def compress(string):
         new_string_list.append(s)
 
     # I used list to store instead of string,
-    # so as  to improve the time complexity
+    # so as to improve the time complexity.
     return ''.join(new_string_list)
 
 
