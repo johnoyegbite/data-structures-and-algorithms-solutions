@@ -44,28 +44,48 @@ Example 2:
 
 
 def compress(string):
+    "21 would give 1211"
+    "1211 would give 111221"
+    "111221 would give 312211"
+    "312211 would give 13112221"
     if not len(string):
         return ""
-    new_string = []
-    count = 0
-    i = 0
+    new_string_list = []
+
+    # pick the first character.
     s = string[0]
 
+    # to keep track of how many times you have seen character 's' until you
+    # meet a new character.
+    count = 0
+
+    i = 0
     while i < len(string):
+        # keep counting till you meet a new character
         if s == string[i]:
             count += 1
+
+        # if you meet a new character,
+        # 1. store the count (how many times you have seen that character)
+        # 2. store the character
+        # PS: The order above matters.
         else:
-            new_string.append(str(count))
-            new_string.append(s)
-            s = string[i]
-            count = 1
+            new_string_list.append(str(count))  # (1)
+            new_string_list.append(s)  # (2)
+            s = string[i]  # Now, get the new character that we are to count
+            count = 1  # This is the first time we have seen it.
         i += 1
 
+    # The else above block won't allow me to store the count for the last
+    # character since we are not going to meet a new character that would allow
+    # me to store it. Hence I store it after the loop.
     if count > 0:
-        new_string.append(str(count))
-        new_string.append(s)
+        new_string_list.append(str(count))
+        new_string_list.append(s)
 
-    return ''.join(new_string)
+    # I used list to store instead of string,
+    # so as  to improve the time complexity
+    return ''.join(new_string_list)
 
 
 def countAndSay(n):
