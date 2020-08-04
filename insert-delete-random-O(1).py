@@ -38,58 +38,50 @@ Example:
     // Since 2 is the only number in the set, getRandom always return 2.
     randomSet.getRandom();
 """
+from random import randint
 
-import random
 
-class RandomizedSet(object):
+class RandomizedSet:
 
     def __init__(self):
         """
         Initialize your data structure here.
         """
-        self.set_dict = {} # most of dictionary operations are O(1)
+        self.set_dict = {}
         self.set_list = []
-        self.set_dict_len = 0
-
+        self.size = 0
+        
     def insert(self, val: int) -> bool:
         """
-        Inserts a value to the set. Returns true if the set did not already 
-        contain the specified element.
-        :type val: int
-        :rtype: bool
+        Inserts a value to the set. Returns true if the set did not already contain the specified element.
         """
         if val not in self.set_dict:
-            self.set_dict[val] = self.set_dict_len
+            self.set_dict[val] = self.size
             self.set_list.append(val)
-            self.set_dict_len += 1
+            self.size += 1
             return True
         return False
 
     def remove(self, val: int) -> bool:
         """
         Removes a value from the set. Returns true if the set contained the specified element.
-        :type val: int
-        :rtype: bool
         """
         if val in self.set_dict:
-            val_index = self.set_dict[val] # get index of value to remove
-            self.set_list[val_index], self.set_list[self.set_dict_len-1] = \
-                self.set_list[self.set_dict_len-1], self.set_list[val_index] # swap value to remove with last value
-            self.set_dict[self.set_list[val_index]] = val_index # Update the index of the swapped value
-            del self.set_dict[self.set_list[self.set_dict_len - 1]] # delete last value in list from dictionary
-            self.set_list.pop() # remove last value
-            self.set_dict_len -= 1
+            val_idx = self.set_dict[val]  # Get the index of value to be removed
+            last_val = self.set_list[self.size-1]  # Get the last value in the list
+            self.set_list[val_idx], self.set_list[self.size-1] = self.set_list[self.size-1], self.set_list[val_idx]  # swap value to remove with last value; Now the last value is the value to be removed
+            self.set_list.pop()  # now, remove the last value
+            self.set_dict[last_val] = val_idx  # update the index of the swapped value
+            del self.set_dict[val]  # delete the required val
+            self.size -= 1  # update the size of the set
             return True
-        
         return False
         
-
     def getRandom(self) -> int:
         """
         Get a random element from the set.
-        :rtype: int
         """
-        return self.set_list[random.randint(0, self.set_dict_len-1)]
+        return self.set_list[randint(0, self.size-1)]
 
 
 if __name__ == "__main__":

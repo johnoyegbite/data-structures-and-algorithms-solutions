@@ -42,32 +42,35 @@ Example 3:
 """
 
 
-def sort_from_best(best, char_freq, sorted_s):
-    for char in char_freq:
-        if char_freq[char] == best:
-            sorted_s.append(best*char)
+class Solution:
+    def frequencySort(self, s: str) -> str:
+        """
+        :type s: str
+        :rtype: str
+        """
+        # Get the frequency of each character.
+        char_freq = {}
+        for char in s:
+            char_freq[char] = char_freq.get(char, 0) + 1
 
+        # Store the [frequency, character] in a list an sort in descending
+        # order. i.e. the character with the highest frequency comes first.
+        sorted_s = []
+        for char in char_freq:
+            sorted_s.append([char_freq[char], char])
+        # Here we sort based on the frequency which is at index 0 of every
+        # [frequency, character] and we also reverse it because the default is
+        # ascending and we require descending (highest to lowest).
+        sorted_s.sort(key=lambda x: x[0], reverse=True)
 
-def frequencySort(s):
-    """
-    :type s: str
-    :rtype: str
-    """
-    char_freq = {}
+        # Replace each [frequency, character] with [character*frequency].
+        # i.e. [3, 'a'] would be replaced by 'aaa' (i.e. 'a'*3).
+        for i in range(len(sorted_s)):
+            sorted_s[i] = sorted_s[i][1]*sorted_s[i][0]
 
-    for char in s:
-        char_freq[char] = char_freq.get(char, 0) + 1
-
-    sorted_s = []
-
-    decreasing_best = sorted(list(set(char_freq.values())), reverse=True)
-
-    for best in decreasing_best:
-        sort_from_best(best, char_freq, sorted_s)
-
-    return ''.join(sorted_s)
+        return ''.join(sorted_s)
 
 
 if __name__ == "__main__":
     s = "eert"
-    print(frequencySort(s))
+    print(Solution().frequencySort(s))

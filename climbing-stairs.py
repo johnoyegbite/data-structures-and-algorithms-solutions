@@ -33,7 +33,7 @@ Note: Given n will be a positive integer
                0    -1  1     0
                        / \  
                       0  -1
-  Tree visiualization for n=3:
+  Tree visiualization for n=4:
   n = 4: 
             
                               4

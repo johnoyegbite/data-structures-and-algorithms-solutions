@@ -39,7 +39,7 @@ Example 2:
       1
       1
       1
-      
+
 Notice
 min() will never be called when there is no number in the stack.
 
@@ -108,9 +108,62 @@ class MinStack(object):
         return self.minimum_number
 
 
+class MinStack2:
+
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.stack = []
+        self.min = float('inf')
+
+        # push [6, 8, 10, 4, 2, 7]
+        #         m=6  m=6  m=6 m=4         m=2
+        # stack = [6,  8,   10, (4 | 6, 4), (2 | 4, 2), 7]
+
+        # pop(all)
+        #                 m=2    m=4     m=6
+        # stack.pop [7, (2, 4), (4, 6), 10, 8, 6]
+
+    def push(self, x: int) -> None:
+        # if x is lesser than old minimum, first append the minimum
+        # then append x else only append x.
+        # So that when you want to pop, if top element is equal to min then we
+        # know that we have to do double popping. The first pop value is the
+        # original x while the second pop value is the original minimum
+        if x <= self.min:
+            self.stack.append(self.min)
+            self.min = x
+        self.stack.append(x)
+
+    def pop(self) -> None:
+        # Read push documentation
+        if self.stack:
+            x = self.stack.pop()
+            if x == self.min:
+                x = self.stack.pop()
+                self.min = x
+            return x
+
+    def top(self) -> int:
+        return self.stack[-1]
+
+    def getMin(self) -> int:
+        return self.min
+
+
+
+# Your MinStack object will be instantiated and called as such:
+# obj = MinStack()
+# obj.push(x)
+# obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.getMin()
+
+
 if __name__ == "__main__":
     stack = MinStack()
-    
+
     # Example 1 => Output: 1, 2, 1
     # stack.push(1)
     # print(stack.pop())
@@ -119,7 +172,7 @@ if __name__ == "__main__":
     # print(stack.min())
     # stack.push(1)
     # print(stack.min())
-    
+
     # Example 2 => Output: 1, 1, 1
     stack.push(1)
     print(stack.min())
@@ -127,7 +180,7 @@ if __name__ == "__main__":
     print(stack.min())
     stack.push(3)
     print(stack.min())
-    
+
     # Example 3 => Output: 1, 1, 1, 1
     # stack.push(1)
     # stack.push(1)
@@ -136,4 +189,3 @@ if __name__ == "__main__":
     # print(stack.pop()) # [1, 1] # 1
     # print(stack.min()) # 1
     # print(stack.pop()) # 1
-    

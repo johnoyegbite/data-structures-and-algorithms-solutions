@@ -68,7 +68,7 @@ def myAtoi(s):
     s = s.lstrip()
     if len(s) < 1:
         return 0
-   
+
     # Perform operation if s begins with a '-', '+' or a digit
     if s[0].isdigit() or s[0] == "-" or s[0] == "+":
         # Get all the starting valid digits 'x'
@@ -86,7 +86,7 @@ def myAtoi(s):
         if x < INT_MIN: return INT_MIN
         if x > INT_MAX: return INT_MAX
         return x
-    
+
     return 0
 
 

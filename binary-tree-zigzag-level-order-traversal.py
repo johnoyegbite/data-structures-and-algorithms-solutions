@@ -33,6 +33,7 @@ For example:
 #         self.left = None
 #         self.right = None
 
+
 def zigzagLevelOrder(root):
     """
     :type root: TreeNode
@@ -40,11 +41,11 @@ def zigzagLevelOrder(root):
     """
     if not root:
         return []
-    
+
     queue = [root]
     zig_zag_order = [[root.val]]
-    
-    i = 1 # Keep track of when to reverse a level to denote zig-zag
+
+    i = 1  # Keep track of when to reverse a level to denote zig-zag
     while len(queue):
         new_queue = []
         new_level_val = []
@@ -55,12 +56,12 @@ def zigzagLevelOrder(root):
             if node.right:
                 new_queue.append(node.right)
                 new_level_val.append(node.right.val)
-        if len(new_level_val): # To avoid empty level
+        if len(new_level_val):  # To avoid empty level
             if i % 2 == 0:
                 zig_zag_order.append(new_level_val)
             else:
                 zig_zag_order.append(new_level_val[::-1])
             i += 1
         queue = new_queue
-        
+
     return zig_zag_order

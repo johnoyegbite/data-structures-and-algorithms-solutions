@@ -83,4 +83,5 @@ if __name__ == "__main__":
     infix = "(1+2)*(3-4)*(5+9)"
     infix = "6*3/2*5"
     infix = "6*3/2*5*1+(2*3+4)^5+9"
+    infix = "2*4+5*(6^3+1)"
     print(infix_to_postfix(infix))

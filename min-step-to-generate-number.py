@@ -26,12 +26,16 @@ Example 2:
 """
 
 """EXPLANATION
-# 1. Using BFS, create a tree where each node has its left child as node*2 and right child is node//3 (this can be taken as a step)
+# 1. Using BFS, create a tree where each node has its left child as node*2 and
+    right child is node//3 (this can be taken as a step)
 # 2. Traverse through the tree using queue implementation.
-# 3. During traversal, don't continue with a node that has already been seen (since its subtree would be repetition)
-# 4. To determine if a step, use the farthest left child node of the tree at any tree height which is always a power of 2 (where 1 and 0 not inclusive)
+# 3. During traversal, don't continue with a node that has already been seen
+     (since its subtree would be repetition)
+# 4. To determine if a step, use the farthest left child node of the tree at
+     any tree height which is always a power of 2 (where 1 and 0 not inclusive)
 # 5. To determine if a digit is a power of two => (digit & (digit-1) == 0
-# 6. What the ampersand sign does is to convert 'digit' to bit and use the logic operator on it
+# 6. What the ampersand sign does is to convert 'digit' to bit and use the
+     logic operator on it
 # 7. 4 & (4-1) == 4 & 3 == 100 & 11 == 0
 """
 

@@ -7,7 +7,7 @@ Created on Fri Jan 31 02:16:44 2020
 # SOLVED!
 """
 Problem:
-    Given a binary tree and a sum, find all root-to-leaf paths where each 
+    Given a binary tree and a sum, find all root-to-leaf paths where each
     path's sum equals the given sum.
 
 Example 1:
@@ -32,8 +32,8 @@ Example 2:
                 6    7
               /  \   / \
               5  2   1  8
-               \ 
-                9  
+               \
+                9
     Output: [[10,6,2],[10,7,1]]
     Explanation:
         The sum of the two paths is 18：
@@ -52,13 +52,14 @@ class TreeNode:
         self.left, self.right = None, None
 """
 
+
 def dfs_visit(root, result, visited, path, given_sum):
     visited.add(root)
     path.append(root.val)
     if not root.left and not root.right:
         if sum(path) == given_sum:
             result.append(path.copy())
-    children = []    
+    children = []
     if root.left:
         children.append(root.left)
     if root.right:
@@ -66,16 +67,17 @@ def dfs_visit(root, result, visited, path, given_sum):
     for child in children:
         if child not in visited:
             dfs_visit(child, result, visited, path, given_sum)
-            
+
     visited.remove(root)
     path.pop()
-            
-"""
-@param root: a binary tree
-@param sum: the sum
-@return: the scheme
-"""
+
+
 def pathSum(root, sum):
+    """
+    type root: a binary tree
+    type sum: the sum
+    type: the scheme
+    """
     # Write your code here.
     result = []
     visited = set()

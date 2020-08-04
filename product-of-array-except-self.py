@@ -24,6 +24,20 @@ Follow up:
     Could you solve it with constant space complexity?
     (The output array does not count as extra space for the purpose of space
     complexity analysis.)
+    
+    [1,2,3,4]
+
+    [1,  1,  2, 6]
+     *   *   *  *
+    [24, 12, 4, 1]
+    
+    [24, 12, 8, 6]
+    
+    [3, 5, 2, 6]
+
+    [1, 3, 15, 30]
+    [60, 12, 6, 1]
+    
 """
 import math
 

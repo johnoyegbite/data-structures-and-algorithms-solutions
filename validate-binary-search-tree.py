@@ -74,3 +74,13 @@ def isValidBST(root, mininum=None, maximum=None):
     #    (parent node would be the minimum
     return isValidBST(root.left, mininum, root) and\
         isValidBST(root.right, root, maximum)
+
+
+# Method 2
+# Using Inorder Traversal (left -> Root -> Right)
+# This would create a sorted list.
+def isValid_BST(root):
+    # 1. Use inorder traversal and store all the element in a list
+    # 2. loop through the list an return false if the list is not sorted
+    #    Else return True
+    pass

@@ -49,12 +49,11 @@ def killProcess(pid, ppid, kill):
     # Write your code here
 
     parent_nodes = {}
-
     for idx, parent in enumerate(ppid):
-        if ppid[idx] > 0:
-            children = parent_nodes.get(ppid[idx], [])
+        if parent > 0:
+            children = parent_nodes.get(parent, [])
             children.append(pid[idx])
-            parent_nodes[ppid[idx]] = children
+            parent_nodes[parent] = children
 
     i = 0
     queue = [kill]

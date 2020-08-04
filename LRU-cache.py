@@ -39,92 +39,125 @@ Example:
 """
 
 
-class DllNode(object):
+class Node(object):
     def __init__(self, key, val):
         self.key = key
         self.val = val
-        self.next = None
         self.prev = None
+        self.next = None
 
 
 class Dll(object):
     def __init__(self):
-        self.head = DllNode(None, None)
-        self.tail = DllNode(None, None)
+        # Initialize empty Double linked list,
+        # by pointing head to tail and tail to head
+        self.head = Node(None, None)
+        self.tail = Node(None, None)
         self.head.next = self.tail
         self.tail.prev = self.head
 
-    def move_to_head(self, node):
-        # detach node from its current position
-        node_prev = node.prev
-        node_next = node.next
-        node_prev.next = node_next
-        node_next.prev = node_prev
-        # move node to after head
-        node.next = self.head.next
+    def insert_node_at_head(self, node):
+        # insert node between head and the next node after head
         node.prev = self.head
+        node.next = self.head.next
+
+        # Update the back pointer of the original head.next to the node
+        # also update the front pointer of head to node.
         self.head.next.prev = node
         self.head.next = node
 
-    def add_node(self, key, val):
-        node = DllNode(key, val)
-        node.next, node.prev = self.head.next, self.head
-        self.head.next.prev, self.head.next = node, node
-        return node
-
     def remove_tail(self):
-        last_node = self.tail.prev
-        last_node.prev.next, self.tail.prev = self.tail, last_node.prev
+        # Note that the least recently used would be at the tail
+        # So we can just delete the node at the tail to invalidate
+        # the least recently used node.
+        self.tail.prev = self.tail.prev.prev
+        self.tail.prev.next = self.tail
 
-    def last_node(self):
+    def move_to_head(self, node):
+        # Note that the most recently used would be at the head
+        # Hence, any node we move to the head would be the most recently used
+
+        # disconnect the node from its current position in the double
+        # linked list by connecting its adjacent nodes together
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+        # after disconneting, insert it at the head to make it the
+        # most recently used.
+        self.insert_node_at_head(node)
+
+    def get_tail(self):
         return self.tail.prev
+
+    def printCache(self, typ):
+        l = ["HEAD"]
+        curr = self.head.next
+        while curr:
+            if not curr.val:
+                l.append("TAIL")
+            else:
+                l.append("[{}]:[{}]".format(curr.key, curr.val))
+            curr = curr.next
+        path = " <--> ".join(l)
+        return typ + ": " + path
 
 
 class LRUCache(object):
-    def __init__(self, capacity: int):
+    def __init__(self, capacity):
         self.capacity = capacity
-        self.Dll = Dll()
-        self.node_lookup = {}
-        self.size = 0
+        self.cache = {}
+        self.dll = Dll()
 
-    def get(self, key: int) -> int:
-        if key not in self.node_lookup:
-            return -1
-        key_node = self.node_lookup[key]
-        self.Dll.move_to_head(key_node)
-        # key_node_index = 1
-        return key_node.val
-
-    def put(self, key: int, value: int) -> None:
-        if key in self.node_lookup:
-            key_node = self.node_lookup[key]
-            # print(key_node.val)
-            key_node.val = value
-            self.Dll.move_to_head(key_node)
+    def put(self, key, value):
+        # if key exists, just modify its value in the cache
+        # and this does it automatically in the Dll.
+        # Also move to head to make it the most recently used and return early.
+        if key in self.cache:
+            node = self.cache[key]
+            node.val = value
+            self.dll.move_to_head(node)
             return
-        if self.size == self.capacity:
-            last_node = self.Dll.last_node()
-            del self.node_lookup[last_node.key]
-            self.Dll.remove_tail()
-            self.size -= 1
-        self.node_lookup[key] = self.Dll.add_node(key, value)
-        self.size += 1
+
+        # if the capacity of the cache is full, the invalidate the least
+        # recently used by deleting the tail node and also deleting it from
+        # the cache
+        if len(self.cache) == self.capacity:
+            tail_node = self.dll.get_tail()
+            del self.cache[tail_node.key]
+            self.dll.remove_tail()
+
+        # Insert the node at the head in the Dll which would automatically
+        # make it the most recently used and also insert in the cache.
+        node = Node(key, value)
+        self.cache[key] = node
+        self.dll.insert_node_at_head(node)
+        # print(self.dll.printCache("PUT"))
+
+    def get(self, key):
+        # if the key exists, return its value and also make sure you move it to
+        # the head to make it the most recently used node.
+        # REMEMBER that the least recently used is always at the tail.
+        if key in self.cache:
+            node = self.cache[key]
+            self.dll.move_to_head(node)
+            # print(self.dll.printCache("GET"))
+            return node.val
+        return -1
 
 
 if __name__ == "__main__":
     # ["LRUCache", "put", "put", "get", "put", "put", "get"]
     # [[2], [2, 1], [2, 2], [2], [1, 1], [4, 1], [2]]
-    
+
     # ["LRUCache","get","put","get","put","put","get","get"]
     # [[2], [2], [2, 6], [1], [1, 5], [1, 2], [1], [2]]
-    
+
     ["LRUCache", "put", "put", "put", "put", "get", "get"]
     [[2], [2, 1], [1, 1], [2, 3], [4, 1], [1], [2]]
-    
-    
+
     # Your LRUCache object will be instantiated and called as such:
     cache = LRUCache(2)
-    
+
     cache.put(2, 1)  # null
     # cache.print_()
     cache.put(1, 1)  # null
@@ -135,7 +168,7 @@ if __name__ == "__main__":
     # cache.print_()
     print(cache.get(1))  # -1
     print(cache.get(2))  # 3
-    
+
     # cache.put("a", 1)
     # cache.put("b", 2)
     # print("Answer: ", cache.get("a")) # returns a

@@ -24,20 +24,22 @@ Given word = "ABCCED", return true.
 Given word = "SEE", return true.
 Given word = "ABCB", return false.
 """
+
+
 def DFS(coord, board, visited, word_seen, word):
     x, y = coord
     visited[coord] = True
     word_seen.append(board[x][y])
-    
+
     if word_seen == word:
         return True
-    
+
     len_word_seen = len(word_seen)
     if word_seen != word[:len_word_seen]:
         word_seen.pop()
-        del visited[(x, y)]
+        del visited[coord]
         return False
-    
+
     # The nested for loops traverse through all the neigbouring vertical and
     # horizontal coordinates (these are the valid neighbouring coord for this problem). 
     # "LINE  **" TO "LINE ***" gets all the valid neighbouring coord

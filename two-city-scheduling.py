@@ -10,21 +10,21 @@ Problem:
     There are 2N people a company is planning to interview.
     The cost of flying the i-th person to city A is costs[i][0],
     and the cost of flying the i-th person to the city B is costs[i][1]
-    
+
 Return the minimum cost to fly every person to a city
        such that exactly N people arrive in each city.
-       
+
 Example:
     Input: [[10, 20], [30, 200], [400, 50], [30, 20]]
     Output: 110
-    
+
     Explanation:
         The first person goes to city A for a cost of 10.
         The second person goes to city A for a cost of 30.
         The third person goes to city B for a cost of 50.
         The fourth person goes to city B for a cost of 20.
-        
-        The total minimum cost is 10 + 30 + 50 + 20 = 110 to have half the 
+
+        The total minimum cost is 10 + 30 + 50 + 20 = 110 to have half the
         people interviewing in each city.
     PS:
         1. 1 <= costs.length <= 100
@@ -32,109 +32,170 @@ Example:
         3. 1 <= costs[i][0], costs[i][1] <= 1000
 """
 
-#def two_city_schedule_cost(costs):
-#    """
-#    Solution: 1. Find the absolute difference between the cost of the two cities
-#              2. store the following (position of cost,
-#                                      position of minimum cost between the two cities,
-#                                      minimum cost between the two cities,
-#                                      absolute difference between the cost of the two cities
-#                                      )
-#              3. Sort (2) above based on (1)
-#              4. keep adding the minimum cost between the two cities.
-#                 when one of the cities is full (full = half of length of costs),
-#                 add the cost of the other city.
-#    """
-#    A_index = 0
-#    B_index = 1
-#    min_index = -1
-#    costs_info = []
-#    
-#    for index, cost in enumerate(costs):
-#        if cost[A_index] < cost[B_index]:
-#            min_index = A_index
-#        elif cost[B_index] < cost[A_index]:
-#            min_index = B_index
-#        min_val = cost[min_index]
-#        diff_AB = abs(costs[index][A_index] - costs[index][B_index])
-#        costs_info.append((index, min_index, min_val, diff_AB))
-#        
-#    total_min, count_A, count_B = 0, 0, 0 
-#    half_N = (len(costs) // 2)
-#    
-#    # sort "costs_info" based on the absolute difference between the cost of the two cities
-#    # which is at index/position "3" in "costs_info".
-#    sorted_costs_info = sorted(costs_info, key=lambda x: x[3], reverse=True)
-#    for cost_info in sorted_costs_info: 
-#        index = cost_info[0]
-#        min_index = cost_info[1]
-#        min_val = cost_info[2]
-#        cost = costs[index]
-#        if min_index == A_index and count_A != half_N:
-##            print(min_val, "A != half", "A")
-#            total_min += min_val
-#            count_A += 1
-#        elif min_index == B_index and count_B != half_N:
-##            print(min_val, "B != half", "B")
-#            total_min += min_val
-#            count_B += 1  
-#        elif count_A == half_N: # city A is full, so add cost of city B
-##            print(cost[B_index], "A == half", "B")
-#            total_min += cost[B_index]
-#        elif count_B == half_N: # city B is full, so add cost of city A
-##            print(cost[A_index], "B == half", "A")
-#            total_min += cost[A_index]
-#
-#    return total_min
 
-# Two City_Schedule Cost improved
+# SOLUTION
+"""
+The company need to send half of the people to city A and the remaining half
+to city B, hence I need to FOCUS on how to send the first half people to city A
+
+
+-- Calculate how much the company would save or loose, in relation to a city
+  (in this case, city A). This is done by subtracting cost to A from cost to B
+  i.e. Profit or loss = costB - costA
+  (a negative value means loss while a positive value means profit)
+
+            +10        +170      -350       -10
+costs = [ [10, 20], [30, 200], [400, 50], [30, 20]] (original costs)
+
+if company send the 1st person to city A instead of city B, they would save +10
+if company send the 2nd person to city A instead of city B, they would save +170
+if company send the 3rd person to city A instead of city B, they would loose -350
+if company send the 4th person to city A instead of city B, they would loose -10
+
+-- Sort the costs according to the maximum profit (or minimum loss),
+i.e. the company wants to know how many of these people won't incure
+     them much loss
+
+             +170      +10       -10      -350
+costs = [ [30, 200], [10, 20], [30, 20] [400, 50]] (sorted costs)
+
+2nd person would save the company +170
+1st person would save the company +10
+4th person make the company loose -10
+3rd person make the company loose -350
+
+This means that the 1st person would incure no loss while the 3rd person would
+incure the maximum loss.
+
+Now we send the first half people that made a save for the company
+(or incured lesser loss) to city A, then we send the rest to city B. | Q.E.D
+
+From the example above, the means that send the 2nd and 1st persons to city
+A, then 4th and 3rd persons to city B.
+
+          A   |  B
+     2nd (30) | (20) 4th
+     1st (10) | (50)  3rd
+    -----------------------
+        40  +  70 = 110 (maximum profit)
+
+
+
+ANOTHER EXAMPLE to clear your DOUBTs -->
+The company need to send half of the people to city A and the remaining half
+to city B, hence I need to FOCUS on how to send the first half people to city A
+
+
+-- Calculate how much the company would save or loose, in relation to a city
+  (in this case, city A). This is done by subtracting cost to A from cost to B
+  i.e. Profit or loss = costB - costA
+  (a negative value means loss while a positive value means profit)
+
+(original costs)
+
+           +511        -394       -259        -45         -772        -108
+costs = [[259, 770], [448, 54], [926, 667], [184, 139], [840, 118], [577, 469]]
+
+if company send the 1st person to city A instead of city B, they would save +511
+if company send the 2nd person to city A instead of city B, they would loose -394
+if company send the 3rd person to city A instead of city B, they would loose -259
+if company send the 4th person to city A instead of city B, they would loose -45
+if company send the 5th person to city A instead of city B, they would loose -772
+if company send the 6th person to city A instead of city B, they would loose -108
+
+-- Sort the costs according to the maximum profit (or minimum loss),
+i.e. the company wants to know how many of these people won't incure
+     them much loss
+
+(sorted costs)
+           +511        -45         -108        -259       -394        -772
+costs = [[259, 770], [184, 139], [577, 469], [926, 667], [448, 54], [840, 118]]
+
+1st person would save the company +511
+4th person make the company loose -45
+6th person make the company loose -108
+3rd person make the company loose -259
+2nd person make the company loose -394
+5th person make the company loose -772
+
+This means that the 1st person would incure no loss while the 5th person would
+incure the maximum loss. Furthermore, the 4th person incures lesser loss than
+the 6th person.
+
+Now we send the first half people that made a save for the company
+(or incured lesser loss), to city A then we send the rest to city B. | Q.E.D
+
+From the example above, the means that send the 1st, 4th and 6th person to city
+A, then 3rd, 2nd and 5th person to city B.
+
+          A   |  B
+    1st (259) | (667) 3rd
+    4th (184) | (54)  2nd
+    6th (577) | (118) 5th
+    -----------------------
+        1020  +  139 = 1859 (maximum profit)
+
+"""
+
+
 def two_city_schedule_cost(costs):
     """
     type cost: List[List[int, int]]
-    Solution: 1. Sort "costs" by the absolute difference between the cost of the two cities
-              2. keep adding the minimum cost between the two cities.
-                 when one of the cities is full (full = half of length of costs),
-                 add the cost of the other city.
+    rtype: int
     """
-    A_index = 0
-    B_index = 1
+    # Sort based on the difference between the cost of both cities.
+    # Reverse to make sure the positive difference (or profit) comes first.
+    costs.sort(key=lambda person: person[1] - person[0], reverse=True)
 
-    total_min = 0
-    count_A = 0
-    count_B = 0
-    
-    half_cost = len(costs) // 2
-    
-    costs_sorted = sorted(costs, key=lambda cost: abs(cost[A_index] - cost[B_index]), reverse = True)
-    for cost in costs_sorted:
-        A_cost = cost[A_index]
-        B_cost = cost[B_index]
-        min_cost = min(A_cost, B_cost)
-        
-        if min_cost == A_cost and count_A != half_cost:
-            count_A += 1
-            total_min += A_cost
-        elif min_cost == B_cost and count_B != half_cost:
-            count_B += 1
-            total_min += B_cost
-        elif count_A == half_cost:
-            total_min += B_cost
-        elif count_B == half_cost:
-            total_min += A_cost
-        
-    return total_min
-    
+    half = len(costs) // 2
+    A_idx = 0  # position of cost for city A
+    B_idx = 1  # position of cost for city B
+    minimum_cost = 0
+
+    # Loop through the half of the list,
+    # Picking cost A from beginning to half of list,
+    # and simutaneously pick cost B from half of the list to the end
+    for i in range(half):
+        #     i=0                 i+half=2
+        # [ [30, 200], [10, 20], [30, 20] [400, 50]]
+        # minimum_cost += costs[0][0] + costs[0+2][1]
+        # => minimum_cost += 30 + 20
+        minimum_cost += costs[i][A_idx] + costs[i+half][B_idx]
+
+    return minimum_cost
+
 
 if __name__ == "__main__":
-    #costs = [
-    #            [10, 20], [30, 200]
-    #            ,[400, 50], [30, 20]
-    #            ,[30, 50], [50, 80]
-    #            ,[120, 130], [50, 50]
-    #        ]
-    #costs = [[259,770],[448,54],[926,667],[184,139],[840,118],[577,469]]
+    # costs = [ [10, 20], [30, 200], [400, 50], [30, 20], [30, 50], [50, 80],
+    #     [120, 130], [50, 50]
+    # ]
+    # costs = [[259,770], [448,54], [926,667], [184,139], [840,118], [577,469]]
     costs = [[10, 20], [30, 200], [400, 50], [30, 20]]
+    print(two_city_schedule_cost(costs))
 
-print(two_city_schedule_cost(costs))
+
+"""
+           A            B
+p1 -> Kaduna (448) | Oyo (54)  [394]
+
+p2 -> Kaduna (259) | Oyo (770) [511]
+    394     >     -511
+p1[0] - p1[1] > p2[0] - p2[1]
+
+p1[0] + p2[1] > p2[0] + p1[1]
+
+  448 + 770   > 259  + 54
 
 
+  p1 = 448 - 54 = 394
+
+  p2 = 259 - 770 = 511
+
+
+
+  [926, 667], [184, 139]
+
+  p2[0] - p2[1] < p1[0] - p1[1]
+   184 - 139 <
+
+"""
